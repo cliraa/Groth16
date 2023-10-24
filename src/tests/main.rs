@@ -1,8 +1,12 @@
 mod term;
 mod linear_expression;
+mod string_utils;
 
 #[cfg(test)]
 mod tests {
+
+    use crate::string_utils::Resolver;
+    use crate::string_utils::StringBuilder;
 
     // term.rs test:
 
@@ -106,4 +110,40 @@ mod tests {
         // Perform assertions on the compressed vector
         assert_eq!(compressed, vec![2, 1, 2, 3, 4]);
     }
+
+    // string_utils.rs test:
+
+    struct TestResolver;
+
+    impl Resolver for TestResolver {
+        fn coeff_to_string(&self, coeff_id: i32) -> String {
+            match coeff_id {
+                COEFF_ID_ZERO => String::from("0"),
+                COEFF_ID_ONE => String::from("1"),
+                COEFF_ID_TWO => String::from("2"),
+                _ => panic!("Unknown coefficient id"),
+            }
+        }
+
+        fn variable_to_string(&self, variable_id: i32) -> String {
+            format!("x{}", variable_id)
+        }
+    }
+
+    #[test]
+    fn test_string_builder() {
+        let resolver = TestResolver;
+        let mut builder = StringBuilder::new(&resolver);
+
+        let linear_expression = LinearExpression(vec![
+            Term::new(COEFF_ID_ONE, 1),
+            Term::new(COEFF_ID_TWO, 2),
+        ]);
+
+        builder.write_linear_expression(&linear_expression);
+
+        assert_eq!(builder.string(), "x12⋅x2");
+
+    }
+
 }
