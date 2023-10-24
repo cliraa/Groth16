@@ -33,6 +33,10 @@ impl Term {
         self.cid as i32
     }
 
+    pub fn new(cid: i32, vid: i32) -> Term {
+        Term { cid, vid }
+    }
+
     /*
     TODO: Fix this function:
 
